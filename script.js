@@ -7,8 +7,13 @@ const photoForm = document.getElementById('photo-form');
 const photoGrid = document.getElementById('photo-grid');
 const qrPreview = document.getElementById('qr-preview');
 const qrDownload = document.getElementById('qr-download');
+const inviteBanner = document.getElementById('invite-banner');
+const inviteSummary = document.getElementById('invite-summary');
+const confirmInviteBtn = document.getElementById('confirm-invite');
+const inviteStatus = document.getElementById('invite-status');
 
 const QR_STORAGE_KEY = 'rsvp-qr-entry';
+let detectedInvite = null;
 
 const mockTables = new Map([
   ['isabela barcelos', 1],
@@ -99,14 +104,7 @@ function renderPhotos() {
 rsvpForm?.addEventListener('submit', event => {
   event.preventDefault();
   const data = Object.fromEntries(new FormData(rsvpForm));
-  const stored = JSON.parse(localStorage.getItem('rsvp-list') ?? '[]');
-  const qrEntry = generateQrEntry(data);
-  stored.push({ ...qrEntry, submittedAt: new Date().toISOString() });
-  localStorage.setItem('rsvp-list', JSON.stringify(stored));
-  saveQrEntry(qrEntry);
-  renderQrPreview(qrEntry);
-  rsvpForm.reset();
-  rsvpFeedback.textContent = 'Obrigado! Seu QR Code de confirmação foi gerado e está disponível ao lado.';
+  handleRsvpSubmission(data);
 });
 
 rsvpForm?.addEventListener('input', () => {
@@ -187,7 +185,8 @@ function renderQrPreview(entry) {
 }
 
 function generateQrEntry(data) {
-  const codeBase = (crypto.randomUUID?.() ?? Math.random().toString(36).slice(2)).replace(/-/g, '');
+  const existingCode = data.code?.toString().trim();
+  const codeBase = existingCode || (crypto.randomUUID?.() ?? Math.random().toString(36).slice(2)).replace(/-/g, '');
   return {
     name: data.name,
     email: data.email,
@@ -197,6 +196,86 @@ function generateQrEntry(data) {
   };
 }
 
+function handleRsvpSubmission(data) {
+  const cleaned = {
+    ...data,
+    guests: Number(data.guests ?? 1) || 1,
+    code: data.code || detectedInvite?.code
+  };
+
+  const stored = JSON.parse(localStorage.getItem('rsvp-list') ?? '[]');
+  const qrEntry = generateQrEntry(cleaned);
+  stored.push({ ...qrEntry, submittedAt: new Date().toISOString(), source: detectedInvite ? 'qr' : 'form' });
+  localStorage.setItem('rsvp-list', JSON.stringify(stored));
+  saveQrEntry(qrEntry);
+  renderQrPreview(qrEntry);
+  if (detectedInvite) {
+    fillFormFields(detectedInvite);
+  } else {
+    rsvpForm?.reset();
+  }
+  rsvpFeedback.textContent = 'Obrigado! Sua confirmação foi registrada e o QR Code está disponível ao lado.';
+  if (inviteStatus) {
+    inviteStatus.textContent = 'Presença confirmada com sucesso. Nos vemos na celebração!';
+  }
+  if (detectedInvite && confirmInviteBtn) {
+    confirmInviteBtn.textContent = 'Presença confirmada';
+    confirmInviteBtn.disabled = true;
+  }
+}
+
+function parseInviteFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const possibleName = params.get('nome') ?? params.get('name');
+  if (!possibleName) return null;
+
+  return {
+    name: possibleName,
+    email: params.get('email') ?? params.get('mail') ?? '',
+    guests: params.get('convidados') ?? params.get('guests') ?? 1,
+    notes: params.get('recado') ?? params.get('notes') ?? '',
+    code: params.get('codigo') ?? params.get('code') ?? params.get('id'),
+    table: params.get('mesa') ?? params.get('table') ?? null
+  };
+}
+
+function hydrateInvite(invite) {
+  if (!invite || !rsvpForm) return;
+  detectedInvite = invite;
+  fillFormFields(invite);
+
+  if (inviteBanner && inviteSummary) {
+    inviteBanner.hidden = false;
+    inviteSummary.innerHTML = `Convite destinado a <strong>${invite.name}</strong>${
+      invite.table ? ` — Mesa ${invite.table}` : ''
+    }. Clique em confirmar para registrar imediatamente.`;
+  }
+
+  if (confirmInviteBtn) {
+    confirmInviteBtn.hidden = false;
+    confirmInviteBtn.addEventListener('click', () => {
+      const data = Object.fromEntries(new FormData(rsvpForm));
+      handleRsvpSubmission({ ...invite, ...data });
+    });
+  }
+}
+
+function fillFormFields(data) {
+  if (!rsvpForm || !data) return;
+  const setField = (name, value) => {
+    const field = rsvpForm.querySelector(`[name="${name}"]`);
+    if (field && value !== undefined && value !== null) {
+      field.value = value;
+    }
+  };
+
+  setField('name', data.name ?? '');
+  setField('email', data.email ?? '');
+  setField('guests', data.guests ?? 1);
+  setField('notes', data.notes ?? '');
+}
+
 renderGifts();
 renderPhotos();
 renderQrPreview(getSavedQrEntry());
+hydrateInvite(parseInviteFromUrl());

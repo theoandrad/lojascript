@@ -162,6 +162,30 @@ textarea {
   align-items: start;
 }
 
+.invite-banner {
+  border: 1px solid rgba(193, 120, 92, 0.4);
+  border-radius: 16px;
+  padding: 1.25rem;
+  margin-top: 1.5rem;
+  background: rgba(193, 120, 92, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.invite-banner p {
+  margin: 0 0 0.5rem;
+}
+
+.invite-banner__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: flex-start;
+}
+
+.invite-banner small {
+  color: var(--muted);
+}
+
 .qr-card {
   border: 1px dashed rgba(193, 120, 92, 0.4);
   border-radius: 20px;

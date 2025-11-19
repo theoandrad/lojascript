@@ -53,9 +53,18 @@
             ajustarmos todos os detalhes com carinho.
           </p>
           <p>
-            Assim que recebermos seus dados, um QR Code único será exibido. Ele funciona como seu comprovante
-            digital de presença — basta apresentá-lo na recepção para agilizar a validação no dia do evento.
+            Ao escanear o QR Code do convite você chega a esta página já com seus dados preenchidos. Basta
+            revisar e clicar em confirmar para finalizar. Assim que concluído, um QR Code único será exibido
+            como comprovante digital de presença.
           </p>
+          <div id="invite-banner" class="invite-banner" hidden>
+            <p id="invite-summary"></p>
+            <p id="invite-status">Detectamos automaticamente os dados enviados no QR Code.</p>
+            <div class="invite-banner__actions">
+              <button id="confirm-invite" class="button" hidden>Confirmar presença agora</button>
+              <small>Se algo estiver incorreto, ajuste os campos abaixo antes de confirmar.</small>
+            </div>
+          </div>
         </div>
         <form id="rsvp-form" class="form">
           <label>
