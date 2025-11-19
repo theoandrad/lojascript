@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Isabela & Thiago — Celebre Conosco</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Work+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__overlay"></div>
+      <div class="hero__content">
+        <p class="hero__eyebrow">15.11.2024 • Paraty, RJ</p>
+        <h1>Isabela & Thiago</h1>
+        <p class="hero__subtitle">
+          Nosso grande dia está chegando. Confirme sua presença, descubra sua mesa
+          e encontre sugestões de presentes especialmente selecionados para você.
+        </p>
+        <a class="button" href="#rsvp">Confirmar Presença</a>
+      </div>
+    </header>
+
+    <main>
+      <section id="timeline" class="card">
+        <h2>Detalhes da Cerimônia</h2>
+        <div class="timeline">
+          <article>
+            <h3>Cerimônia</h3>
+            <p>Capela de Santa Rita — 16h30</p>
+          </article>
+          <article>
+            <h3>Recepção</h3>
+            <p>Casa do Sabiá — 18h00</p>
+          </article>
+          <article>
+            <h3>Dress Code</h3>
+            <p>Tons terrosos e florais (evite branco)</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="rsvp" class="card rsvp-grid">
+        <div>
+          <h2>Confirmação de Presença</h2>
+          <p>
+            Pedimos a gentileza de confirmar até <strong>15 de outubro</strong> para
+            ajustarmos todos os detalhes com carinho.
+          </p>
+          <p>
+            Ao escanear o QR Code do convite você chega a esta página já com seus dados preenchidos. Basta
+            revisar e clicar em confirmar para finalizar. Assim que concluído, um QR Code único será exibido
+            como comprovante digital de presença.
+          </p>
+          <div id="invite-banner" class="invite-banner" hidden>
+            <p id="invite-summary"></p>
+            <p id="invite-status">Detectamos automaticamente os dados enviados no QR Code.</p>
+            <div class="invite-banner__actions">
+              <button id="confirm-invite" class="button" hidden>Confirmar presença agora</button>
+              <small>Se algo estiver incorreto, ajuste os campos abaixo antes de confirmar.</small>
+            </div>
+          </div>
+        </div>
+        <form id="rsvp-form" class="form">
+          <label>
+            Nome completo
+            <input type="text" name="name" required placeholder="Seu nome" autocomplete="name" />
+          </label>
+          <label>
+            E-mail
+            <input type="email" name="email" required placeholder="voce@email.com" autocomplete="email" />
+          </label>
+          <label>
+            Quantidade de convidados
+            <input type="number" name="guests" min="1" max="6" value="1" />
+          </label>
+          <label>
+            Comentários especiais
+            <textarea name="notes" rows="3" placeholder="Restrições alimentares, recados, etc."></textarea>
+          </label>
+          <button type="submit" class="button">Gerar QR Code</button>
+          <p id="rsvp-feedback" role="status" aria-live="polite"></p>
+        </form>
+        <div class="qr-card">
+          <div class="qr-card__header">
+            <h3>QR Code da sua presença</h3>
+            <p>Este QR Code é pessoal e pode ser baixado para salvar na carteira do celular.</p>
+          </div>
+          <div id="qr-preview" class="qr-preview" role="status" aria-live="polite">
+            <p>Envie o formulário para gerar seu QR Code exclusivo.</p>
+          </div>
+          <a id="qr-download" class="button button--ghost" download="confirmacao-casamento.png" hidden>
+            Baixar QR Code
+          </a>
+        </div>
+      </section>
+
+      <section id="tables" class="card">
+        <div>
+          <h2>Descubra seu número de mesa</h2>
+          <p>Informe seu nome completo para encontrar rapidamente sua mesa no salão.</p>
+        </div>
+        <form id="table-form" class="form inline">
+          <input
+            type="text"
+            name="guest"
+            placeholder="Digite seu nome"
+            autocomplete="off"
+            required
+          />
+          <button class="button" type="submit">Consultar</button>
+        </form>
+        <p id="table-result" role="status" aria-live="polite"></p>
+      </section>
+
+      <section id="gifts" class="card">
+        <h2>Lista de Presentes</h2>
+        <p>
+          Selecionamos opções em diferentes valores. Clique em "Reservar" para sinalizar o
+          presente escolhido — apenas você verá sua seleção neste dispositivo.
+        </p>
+        <ul id="gift-list" class="gift-list"></ul>
+      </section>
+
+      <section id="gallery" class="card">
+        <div class="gallery__header">
+          <div>
+            <h2>Galeria de Fotos</h2>
+            <p>
+              No dia seguinte ao evento atualizaremos este espaço com todos os registros feitos pelos convidados.
+              Enquanto isso, você pode adicionar links de fotos favoritas hospedadas em serviços externos.
+            </p>
+          </div>
+          <form id="photo-form" class="form inline">
+            <input type="url" name="photo" placeholder="Cole o link da foto" />
+            <button class="button" type="submit">Adicionar</button>
+          </form>
+        </div>
+        <div id="photo-grid" class="photo-grid"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Com carinho, Isabela & Thiago • #ParaSempreBarcelos</p>
+      <p>
+        Precisa de ajuda? Escreva para
+        <a href="mailto:casamento@isabelathiago.com">casamento@isabelathiago.com</a>
+      </p>
+    </footer>
+
+    <script src="script.js" defer></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service.js');
+        });
+      }
+    </script>
+  </body>
+</html>
